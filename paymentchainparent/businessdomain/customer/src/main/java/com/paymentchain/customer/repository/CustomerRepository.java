@@ -6,11 +6,18 @@ package com.paymentchain.customer.repository;
 
 import com.paymentchain.customer.entities.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  *
  * @author adelb
  */
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
+    
+    @Query("Select c from Customer c where c.code=?1")
+    public Customer findByCode(String code);
+    
+    @Query("Select c from Customer c where c.iban=?1")
+    public Customer findByIban(String iban);
     
 }

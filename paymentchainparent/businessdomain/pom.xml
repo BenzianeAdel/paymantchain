@@ -12,6 +12,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>customer</module>
+        <module>product</module>
     </modules>
     <properties>
         <spring-cloud-dependencies.version>2024.0.1</spring-cloud-dependencies.version>

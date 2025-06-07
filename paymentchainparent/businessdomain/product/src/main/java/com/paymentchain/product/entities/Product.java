@@ -2,10 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.paymentchain.customer.entities;
+package com.paymentchain.product.entities;
 
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.Data;
 
 /**
@@ -14,22 +13,11 @@ import lombok.Data;
  */
 @Entity
 @Data
-public class Customer {
+public class Product {
     
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private long id;
     private String code;
     private String name;
-    private String phone;
-    private String iban;
-    private String surname;
-    private String address;
-    
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CustomerProduct> products;
-    
-    
-    @Transient
-    private List<?> transactions;
 }

@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/springframework/RestController.java to edit this template
  */
-package com.paymentchain.customer.controller;
+package com.paymentchain.product.controller;
 
-import com.paymentchain.customer.entities.Customer;
-import com.paymentchain.customer.services.CustomerService;
+import com.paymentchain.product.entities.Product;
+import com.paymentchain.product.services.ProductService;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
@@ -19,32 +19,27 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
  * @author adelb
  */
 @RestController
-@RequestMapping("/customer")
-public class CustomerRestController {
+@RequestMapping("/product")
+public class ProductRestController {
     @Autowired
-    private CustomerService customerService;
+    private ProductService productService;
     
     @GetMapping()
-    public List<Customer> findAll() {
-        return customerService.getCustomerAll();
+    public List<Product> findAll() {
+        return productService.getProductAll();
     }
-    @GetMapping("/full")
-    public Customer getByCode(@RequestParam(name = "code") String code) {
-        return customerService.getByCode(code);
-       
-    }
+    
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable long id) {
-        Optional<Customer> customer = customerService.getCustomer(id);
-        if(customer.isPresent()){
-            return new ResponseEntity<>(customer.get(),HttpStatus.OK);
+        Optional<Product> product = productService.getProduct(id);
+        if(product.isPresent()){
+            return new ResponseEntity<>(product.get(),HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -52,10 +47,10 @@ public class CustomerRestController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<?> put(@PathVariable long id, @RequestBody Customer input) {
-        Optional<Customer> customer = customerService.getCustomer(id);
-        if(customer.isPresent()){
-            Customer modificado = customerService.modificarCustomer(id, input);
+    public ResponseEntity<?> put(@PathVariable long id, @RequestBody Product input) {
+        Optional<Product> product = productService.getProduct(id);
+        if(product.isPresent()){
+            Product modificado = productService.modificarProduct(id, input);
             return new ResponseEntity<>(modificado,HttpStatus.OK);
         }
         else{
@@ -64,16 +59,16 @@ public class CustomerRestController {
     }
     
     @PostMapping
-    public ResponseEntity<?> post(@RequestBody Customer input) {
-        Customer customer = customerService.guardarCustomer(input);
-        return ResponseEntity.ok(customer);
+    public ResponseEntity<?> post(@RequestBody Product input) {
+        Product product = productService.guardarProduct(input);
+        return ResponseEntity.ok(product);
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable long id) {
-        Optional<Customer> customer = customerService.getCustomer(id);
-        if(customer.isPresent()){
-            customerService.eliminarCustomer(id);
+        Optional<Product> product = productService.getProduct(id);
+        if(product.isPresent()){
+            productService.eliminarProduct(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         else{
