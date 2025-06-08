@@ -36,7 +36,7 @@ public class ProductRestController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable long id) {
+    public ResponseEntity<?> get(@PathVariable("id") long id) {
         Optional<Product> product = productService.getProduct(id);
         if(product.isPresent()){
             return new ResponseEntity<>(product.get(),HttpStatus.OK);
@@ -47,7 +47,7 @@ public class ProductRestController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<?> put(@PathVariable long id, @RequestBody Product input) {
+    public ResponseEntity<?> put(@PathVariable("id") long id, @RequestBody Product input) {
         Optional<Product> product = productService.getProduct(id);
         if(product.isPresent()){
             Product modificado = productService.modificarProduct(id, input);
@@ -65,7 +65,7 @@ public class ProductRestController {
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable long id) {
+    public ResponseEntity<?> delete(@PathVariable("id") long id) {
         Optional<Product> product = productService.getProduct(id);
         if(product.isPresent()){
             productService.eliminarProduct(id);

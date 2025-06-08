@@ -86,6 +86,24 @@ public class CustomerService {
         String name = block.get("name").asText();
         return name;
     }
+    private List<?> getTransactions(String iban) {
+        WebClient build = webClientBuilder.clientConnector(new ReactorClientHttpConnector(client))
+                .baseUrl("http://localhost:8083/transaction")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build();       
+        
+        Optional<List<?>> transactionsOptional = Optional.ofNullable(build.method(HttpMethod.GET)
+        .uri(uriBuilder -> uriBuilder
+                .path("/transactionByIban")
+                .queryParam("ibanAccount", iban)
+                .build())
+        .retrieve()
+        .bodyToFlux(Object.class)
+        .collectList()
+        .block());       
+
+        return transactionsOptional.orElse(Collections.emptyList());
+    }
   
     public Customer getByCode(String code) {
         Customer customer = customerRepository.findByCode(code);
@@ -94,6 +112,7 @@ public class CustomerService {
             String productName = getProductName(x.getId());
             x.setProductName(productName);
         });
+        customer.setTransactions(getTransactions(customer.getIban()));
         return customer;
     }
 }

@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/springframework/RestController.java to edit this template
  */
-package com.paymentchain.customer.controller;
+package com.paymentchain.transaction.controller;
 
-import com.paymentchain.customer.entities.Customer;
-import com.paymentchain.customer.services.CustomerService;
+import com.paymentchain.transaction.entities.Transaction;
+import com.paymentchain.transaction.services.TransactionService;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
@@ -26,36 +26,37 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author adelb
  */
 @RestController
-@RequestMapping("/customer")
-public class CustomerRestController {
+@RequestMapping("/transaction")
+public class TransactionRestController {
     @Autowired
-    private CustomerService customerService;
+    private TransactionService transactionService;
     
     @GetMapping()
-    public List<Customer> findAll() {
-        return customerService.getCustomerAll();
+    public List<Transaction> findAll() {
+        return transactionService.getTransactionAll();
     }
-    @GetMapping("/full")
-    public Customer getByCode(@RequestParam(name = "code") String code) {
-        return customerService.getByCode(code);
-       
-    }
+    
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable("id") long id) {
-        Optional<Customer> customer = customerService.getCustomer(id);
-        if(customer.isPresent()){
-            return new ResponseEntity<>(customer.get(),HttpStatus.OK);
+    public ResponseEntity<?> get(@PathVariable long id) {
+        Optional<Transaction> transaction = transactionService.getTransaction(id);
+        if(transaction.isPresent()){
+            return new ResponseEntity<>(transaction.get(),HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
     
+    @GetMapping("/transactionByIban")
+    public List<Transaction> get(@RequestParam(name = "ibanAccount") String ibanAccount) {
+      return transactionService.findByIbanAccount(ibanAccount);      
+    }
+    
     @PutMapping("/{id}")
-    public ResponseEntity<?> put(@PathVariable("id") long id, @RequestBody Customer input) {
-        Optional<Customer> customer = customerService.getCustomer(id);
-        if(customer.isPresent()){
-            Customer modificado = customerService.modificarCustomer(id, input);
+    public ResponseEntity<?> put(@PathVariable long id, @RequestBody Transaction input) {
+        Optional<Transaction> transaction = transactionService.getTransaction(id);
+        if(transaction.isPresent()){
+            Transaction modificado = transactionService.modificarTransaction(id, input);
             return new ResponseEntity<>(modificado,HttpStatus.OK);
         }
         else{
@@ -64,16 +65,16 @@ public class CustomerRestController {
     }
     
     @PostMapping
-    public ResponseEntity<?> post(@RequestBody Customer input) {
-        Customer customer = customerService.guardarCustomer(input);
-        return ResponseEntity.ok(customer);
+    public ResponseEntity<?> post(@RequestBody Transaction input) {
+        Transaction transaction = transactionService.guardarTransaction(input);
+        return ResponseEntity.ok(transaction);
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") long id) {
-        Optional<Customer> customer = customerService.getCustomer(id);
-        if(customer.isPresent()){
-            customerService.eliminarCustomer(id);
+    public ResponseEntity<?> delete(@PathVariable long id) {
+        Optional<Transaction> transaction = transactionService.getTransaction(id);
+        if(transaction.isPresent()){
+            transactionService.eliminarTransaction(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         else{
