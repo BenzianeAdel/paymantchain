@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +31,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CustomerRestController {
     @Autowired
     private CustomerService customerService;
+    
+    @Autowired
+    private Environment env;
+    @GetMapping("/check")
+    public String check(){
+        return "Hello your property value is "+ env.getProperty("custom.activeprofileName");
+    }
     
     @GetMapping()
     public List<Customer> findAll() {
