@@ -15,7 +15,7 @@
         <module>product</module>
     </modules>
     <properties>
-        <spring-cloud-dependencies.version>2024.0.1</spring-cloud-dependencies.version>
+        <spring-cloud-dependencies.version>2023.0.0</spring-cloud-dependencies.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <org.lombo.version>1.18.38</org.lombo.version>
         <org.springdoc.version>2.3.0</org.springdoc.version>
