@@ -12,5 +12,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>ConfigServer</module>
+        <module>eurekaServer</module>
     </modules>
 </project>
