@@ -33,7 +33,9 @@ import reactor.netty.http.client.HttpClient;
 @Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
-    private final WebClient.Builder webClientBuilder;
+    
+    @Autowired
+    private  WebClient.Builder webClientBuilder;
 
     private final HttpClient client = HttpClient.create()
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
@@ -46,9 +48,8 @@ public class CustomerService {
             connection.addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS));
         });
 
-    public CustomerService(CustomerRepository customerRepository, WebClient.Builder webClientBuilder) {
+    public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
-        this.webClientBuilder = webClientBuilder;
     }
     public List<Customer> getCustomerAll(){
         return customerRepository.findAll();
@@ -77,7 +78,7 @@ public class CustomerService {
     
     private String getProductName(long id) { 
         WebClient build = webClientBuilder.clientConnector(new ReactorClientHttpConnector(client))
-                .baseUrl("http://localhost:8082/product")
+                .baseUrl("http://product/product")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultUriVariables(Collections.singletonMap("url", "http://localhost:8082/product"))
                 .build();
@@ -88,7 +89,7 @@ public class CustomerService {
     }
     private List<?> getTransactions(String iban) {
         WebClient build = webClientBuilder.clientConnector(new ReactorClientHttpConnector(client))
-                .baseUrl("http://localhost:8083/transaction")
+                .baseUrl("http://transaction/transaction")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();       
         
