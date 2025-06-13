@@ -5,7 +5,9 @@
 package com.paymentchain.customer.controller;
 
 import com.paymentchain.customer.entities.Customer;
+import com.paymentchain.customer.exception.BussinesRuleException;
 import com.paymentchain.customer.services.CustomerService;
+import java.net.UnknownHostException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
@@ -50,7 +52,7 @@ public class CustomerRestController {
         }
     }
     @GetMapping("/full")
-    public Customer getByCode(@RequestParam(name = "code") String code) {
+    public Customer getByCode(@RequestParam(name = "code") String code) throws UnknownHostException {
         return customerService.getByCode(code);
        
     }
@@ -78,7 +80,7 @@ public class CustomerRestController {
     }
     
     @PostMapping
-    public ResponseEntity<?> post(@RequestBody Customer input) {
+    public ResponseEntity<?> post(@RequestBody Customer input) throws BussinesRuleException, UnknownHostException {
         Customer customer = customerService.guardarCustomer(input);
         return ResponseEntity.status(HttpStatus.CREATED).body(customer);
     }
