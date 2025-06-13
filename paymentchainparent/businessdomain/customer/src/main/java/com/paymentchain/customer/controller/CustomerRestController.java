@@ -40,8 +40,14 @@ public class CustomerRestController {
     }
     
     @GetMapping()
-    public List<Customer> findAll() {
-        return customerService.getCustomerAll();
+    public ResponseEntity<?>findAll() {
+        List<Customer> customers = customerService.getCustomerAll();
+        if(customers.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        else{
+            return ResponseEntity.ok(customers);
+        }
     }
     @GetMapping("/full")
     public Customer getByCode(@RequestParam(name = "code") String code) {
@@ -74,7 +80,7 @@ public class CustomerRestController {
     @PostMapping
     public ResponseEntity<?> post(@RequestBody Customer input) {
         Customer customer = customerService.guardarCustomer(input);
-        return ResponseEntity.ok(customer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(customer);
     }
     
     @DeleteMapping("/{id}")
