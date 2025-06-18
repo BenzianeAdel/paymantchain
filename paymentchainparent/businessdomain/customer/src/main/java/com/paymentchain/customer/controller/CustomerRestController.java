@@ -44,12 +44,7 @@ public class CustomerRestController {
     @GetMapping()
     public ResponseEntity<?>findAll() {
         List<Customer> customers = customerService.getCustomerAll();
-        if(customers.isEmpty()){
-            return ResponseEntity.noContent().build();
-        }
-        else{
-            return ResponseEntity.ok(customers);
-        }
+        return customers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(customers);
     }
     @GetMapping("/full")
     public Customer getByCode(@RequestParam(name = "code") String code) throws UnknownHostException {
@@ -57,14 +52,8 @@ public class CustomerRestController {
        
     }
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable("id") long id) {
-        Optional<Customer> customer = customerService.getCustomer(id);
-        if(customer.isPresent()){
-            return new ResponseEntity<>(customer.get(),HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Customer> get(@PathVariable("id") long id) {
+        return customerService.getCustomer(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());    
     }
     
     @PutMapping("/{id}")

@@ -4,8 +4,13 @@
  */
 package com.example.billing.controller;
 
+import com.example.billing.dto.BillingRequest;
+import com.example.billing.dto.BillingResponse;
 import com.example.billing.entities.Billing;
 import com.example.billing.services.BillingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
@@ -27,54 +32,42 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/billing")
 public class BillingController {
+
     @Autowired
     private BillingService billingService;
-    
+
+    @Operation(description = "Return all invoices bundled into Response", summary = "Return 204 if no data found")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Exito"),
+        @ApiResponse(responseCode = "500", description = "Internal error")})
     @GetMapping()
-    public List<Billing> findAll() {
-        return billingService.getBillingAll();
+    public ResponseEntity<List<BillingResponse>> findAll() {
+        List<BillingResponse> billings = billingService.getBillingAll();
+        return billings.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(billings);
     }
-    
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable long id) {
-        Optional<Billing>billing = billingService.getBilling(id);
-        
-        if(billing.isPresent()){
-            return new ResponseEntity<>(billing.get(),HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<BillingResponse> get(@PathVariable("id") long id) {
+        Optional<BillingResponse> billing = billingService.getBilling(id);
+        return billing.isPresent() ? ResponseEntity.ok(billing.get()) : ResponseEntity.notFound().build();
     }
-    
+
     @PutMapping("/{id}")
-    public ResponseEntity<?> put(@PathVariable long id, @RequestBody Billing input) {
-        Optional<Billing> billing = billingService.getBilling(id);
-        if(billing.isPresent()){
-            Billing modificado = billingService.modificarBilling(id, input);
-            return new ResponseEntity<>(modificado,HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<BillingResponse> put(@PathVariable("id") long id, @RequestBody BillingRequest input) {
+        BillingResponse br = billingService.modificarBilling(id, input);
+        return br != null ? ResponseEntity.ok(br) : ResponseEntity.notFound().build();
     }
-    
+
     @PostMapping
-    public ResponseEntity<?> post(@RequestBody Billing input) {
-        Billing billing = billingService.guardarBilling(input);
-        return ResponseEntity.ok(billing);
+    public ResponseEntity<BillingResponse> post(@RequestBody BillingRequest input) {
+        BillingResponse billingResponse = billingService.guardarBilling(input);
+        return billingResponse != null
+                ? ResponseEntity.status(HttpStatus.CREATED).body(billingResponse)
+                : ResponseEntity.badRequest().build();
     }
-    
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable long id) {
-        Optional<Billing> billing = billingService.getBilling(id);
-        if(billing.isPresent()){
-            billingService.eliminarBilling(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<?> delete(@PathVariable("id") long id) {
+        return billingService.eliminarBilling(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
-    
 }

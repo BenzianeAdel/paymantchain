@@ -4,6 +4,10 @@
  */
 package com.example.billing.services;
 
+import com.example.billing.common.BillingRequestMapper;
+import com.example.billing.common.BillingResponseMapper;
+import com.example.billing.dto.BillingRequest;
+import com.example.billing.dto.BillingResponse;
 import com.example.billing.entities.Billing;
 import com.example.billing.repository.BillingRepository;
 import java.util.List;
@@ -17,28 +21,48 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BillingService {
+
     @Autowired
     private BillingRepository billingRepository;
-    
-    public List<Billing>getBillingAll(){
-        return billingRepository.findAll();
+
+    @Autowired
+    BillingRequestMapper brm;
+
+    @Autowired
+    BillingResponseMapper brspm;
+
+    public List<BillingResponse> getBillingAll() {
+        return brspm.BillingListToBillingResposeList(billingRepository.findAll());
     }
-    public Optional<Billing>getBilling(long id){
-        return billingRepository.findById(id);
+
+    public Optional<BillingResponse> getBilling(long id) {
+        return billingRepository.findById(id)
+                .map(brspm::BillingToBillingRespose);
     }
-    public Billing modificarBilling(long id, Billing input){
-        Billing encontrado = getBilling(id).get();
-        encontrado.setAmount(input.getAmount());
-        encontrado.setDetail(input.getDetail());
-        encontrado.setNumber(input.getNumber());
-        Billing setBilling = billingRepository.save(encontrado);
-        return setBilling;
+
+    public BillingResponse modificarBilling(long id, BillingRequest input) {
+        return billingRepository.findById(id)
+                .map(billing -> {
+                    billing.setAmount(input.getAmount());
+                    billing.setDetail(input.getDetail());
+                    billing.setNumber(input.getNumber());
+                    Billing actualizado = billingRepository.save(billing);
+                    return brspm.BillingToBillingRespose(actualizado);
+                })
+                .orElse(null);
     }
-    public void eliminarBilling(long id){
-        billingRepository.deleteById(id);
+
+    public boolean eliminarBilling(long id) {
+        if (billingRepository.existsById(id)) {
+            billingRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
-    public Billing guardarBilling(Billing entrada){
-        return billingRepository.save(entrada);
+
+    public BillingResponse guardarBilling(BillingRequest entrada) {
+        return brspm.BillingToBillingRespose(billingRepository.save(brm.BillingRequestToBilling(entrada)));
     }
-    
+
 }
