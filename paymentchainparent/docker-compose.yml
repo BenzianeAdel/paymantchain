@@ -36,6 +36,20 @@ services:
     depends_on:
       - registry-discovery
     ports:
+      - 8081:8081
+      
+  apigetway:
+    container_name: bd-apigetway
+    image: paymentchain/microservice-docker-apigetway:0.0.1-SNAPSHOT   
+    environment:
+      - JAVA_OPTS=
+         -Xms256M 
+         -Xmx256M
+         -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+
+    depends_on:
+      - registry-discovery
+    ports:
       - 8080:8080
 
   postgres_db:

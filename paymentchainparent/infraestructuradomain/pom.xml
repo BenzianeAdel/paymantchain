@@ -13,5 +13,6 @@
     <modules>
         <module>ConfigServer</module>
         <module>eurekaServer</module>
+        <module>apigetway</module>
     </modules>
 </project>
