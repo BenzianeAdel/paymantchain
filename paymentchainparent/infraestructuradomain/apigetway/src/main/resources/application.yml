@@ -16,17 +16,16 @@ eureka:
   client:
     serviceUrl:
       defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
-    register-with-eureka: true
-    # healthcheck:
-    #   enabled: true
-    fetch-registry: true
+      
 spring:
+  application:
+    name: apigetway
   cloud:
     config:
       enabled: false
     gateway:
       routes:
       - id: customer_service
-        uri: http://customer:8081
+        uri: lb://customer
         predicates:
-        - Path=/customer/**
+        - Path=/**

@@ -35,8 +35,6 @@ services:
 
     depends_on:
       - registry-discovery
-    ports:
-      - 8081:8081
       
   apigetway:
     container_name: bd-apigetway
