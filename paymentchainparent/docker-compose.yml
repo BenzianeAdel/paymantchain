@@ -74,6 +74,18 @@ services:
       - 80:80
     depends_on:
       - postgres_db
+  
+  
+  keycloack_server:
+    container_name: id-keycloackServer
+    image: quay.io/keycloak/keycloak:24.0.5
+    command: ["start-dev"]
+    restart: always
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - 8091:8080
 
 
 
