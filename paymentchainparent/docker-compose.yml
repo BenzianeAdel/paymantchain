@@ -49,6 +49,24 @@ services:
       - registry-discovery
     ports:
       - 8080:8080
+  
+  
+  keycloack:
+    container_name: keycloackAdapter
+    image: paymentchain/microservice-docker-keycloackadapter:0.0.1-SNAPSHOT    
+      #All projets will have a variable value  DEUREKA_SERVER this tell where find a registry-discovery server 
+    environment:
+      - JAVA_OPTS=
+         -Xms256M 
+         -Xmx256M
+         -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+         -DKEYCLOACK_SERVER=http://keycloack_server:8080/realms/
+         -DKEYCLOACK_REAL_ID=dngIVep0pp4elBxeLZ84tPDV6GLkTrFIlxRiLOdXmak
+         #-Dspring.cloud.config.server.native.searchLocations=/var/config-data
+    depends_on:
+      - registry-discovery
+    ports:
+      - 8088:8088
 
   postgres_db:
     container_name: postgres

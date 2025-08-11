@@ -25,7 +25,24 @@ spring:
       enabled: false
     gateway:
       routes:
+      - id: customer_full
+        uri: lb://customer
+        predicates:
+        - Path=/customer/full/**
+        filters:
+        - name: AuthenticationFiltering   
+    
+        
       - id: customer_service
         uri: lb://customer
         predicates:
-        - Path=/**
+        - Path=/customer/**
+        
+          
+      - id: transactionService
+        uri: lb://transaction
+        predicates:
+        - Path=/transaction/**
+        - Method=GET,POST,PUT,DELETE
+        filters:
+        - name: AuthenticationFiltering   

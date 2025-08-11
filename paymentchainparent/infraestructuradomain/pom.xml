@@ -14,5 +14,6 @@
         <module>ConfigServer</module>
         <module>eurekaServer</module>
         <module>apigetway</module>
+        <module>KeycloackAdapter</module>
     </modules>
 </project>
